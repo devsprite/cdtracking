@@ -28,7 +28,7 @@ if (!defined('_PS_VERSION_')) {
 
 require_once(dirname(__FILE__) . "/../../classes/CustomerTrackingClass.php");
 
-class AdminTrackingController extends ModuleAdminController
+class AdminTrackingProspectsController extends ModuleAdminController
 {
     public $smarty;
     private $path_tpl;
@@ -87,14 +87,14 @@ class AdminTrackingController extends ModuleAdminController
 
     public function displayCalendar()
     {
-        return AdminTrackingController::displayCalendarForm(array(
-            'Calendar' => $this->l('Calendrier', 'AdminTracking'),
-            'Day' => $this->l('Jour', 'AdminTracking'),
-            'Month' => $this->l('Mois', 'AdminTracking'),
-            'Year' => $this->l('Année', 'AdminTracking'),
-            'From' => $this->l('Du', 'AdminTracking'),
-            'To' => $this->l('Au', 'AdminTracking'),
-            'Save' => $this->l('Enregistrer', 'AdminTracking')
+        return AdminTrackingProspectsController::displayCalendarForm(array(
+            'Calendar' => $this->l('Calendrier', 'AdminTrackingProspects'),
+            'Day' => $this->l('Jour', 'AdminTrackingProspects'),
+            'Month' => $this->l('Mois', 'AdminTrackingProspects'),
+            'Year' => $this->l('Année', 'AdminTrackingProspects'),
+            'From' => $this->l('Du', 'AdminTrackingProspects'),
+            'To' => $this->l('Au', 'AdminTrackingProspects'),
+            'Save' => $this->l('Enregistrer', 'AdminTrackingProspects')
         ), $this->token);
     }
 
@@ -107,7 +107,7 @@ class AdminTrackingController extends ModuleAdminController
             $id = Tools::getValue('module');
         }
 
-        $action = Context::getContext()->link->getAdminLink('AdminTracking');
+        $action = Context::getContext()->link->getAdminLink('AdminTrackingProspects');
         $action .= ($action && $table ? '&' . Tools::safeOutput($action) : '');
         $action .= ($identifier && $id ? '&' . Tools::safeOutput($identifier) . '=' . (int)$id : '');
         $module = Tools::getValue('module');

@@ -81,7 +81,7 @@ class Cdtracking extends Module
                 $tab->name[$language['id_lang']] = $this->tabName;
             }
         }
-        $tab->class_name = 'AdminTracking';
+        $tab->class_name = 'AdminTrackingProspects';
         $tab->module = 'cdtracking';
         $tab->id_parent = Tab::getIdFromClassName("AdminParentStats");
 
@@ -90,7 +90,7 @@ class Cdtracking extends Module
 
     private function _eraseTabs()
     {
-        $id_tab = (int)Tab::getIdFromClassName('AdminTracking');
+        $id_tab = (int)Tab::getIdFromClassName('AdminTrackingProspects');
         if ($id_tab) {
             $tab = new Tab($id_tab);
             $tab->delete();
