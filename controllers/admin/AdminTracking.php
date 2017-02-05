@@ -28,7 +28,7 @@ if (!defined('_PS_VERSION_')) {
 
 require_once(dirname(__FILE__) . "/../../classes/CustomerTrackingClass.php");
 
-class AdminTrackingProspectsController extends ModuleAdminController
+class AdminTrackingController extends ModuleAdminController
 {
     public $smarty;
     private $path_tpl;
@@ -87,7 +87,7 @@ class AdminTrackingProspectsController extends ModuleAdminController
 
     public function displayCalendar()
     {
-        return AdminTrackingProspectsController::displayCalendarForm(array(
+        return AdminTrackingController::displayCalendarForm(array(
             'Calendar' => $this->l('Calendrier', 'AdminTrackingProspects'),
             'Day' => $this->l('Jour', 'AdminTrackingProspects'),
             'Month' => $this->l('Mois', 'AdminTrackingProspects'),

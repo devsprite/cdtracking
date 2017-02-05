@@ -30,69 +30,71 @@ if (!defined('_PS_VERSION_')) {
 
 class Cdtracking extends Module
 {
+    public $name;
+    public $tabName;
+
     public function __construct()
     {
         $this->name = 'cdtracking';
         $this->tab = 'analytics_stats';
+        $this->tabName = 'Tracking';
         $this->version = '1.0.0';
         $this->author = 'Dominique';
         $this->need_instance = 0;
-        $this->table_name = $this->name;
-        $this->table_charset = 'utf8';
         $this->bootstrap = true;
 
         parent::__construct();
 
+        $this->table_name = $this->name;
         $this->displayName = $this->l('Stats Tracking');
         $this->description = $this->l('Affichage des informations de tracking.');
         $this->confirmUninstall = $this->l('Are you sure you want to delete this module?');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
     }
 
-    public function installModule()
+    public function install()
     {
         if (!parent::install() ||
-            !$this->_createSingleTab('AdminTrackingProspects', 'Tracking', Language::getLanguages())
-        )
+            !$this->createSingleTab()
+        ) {
             return false;
+        }
         return true;
     }
 
-    public function uninstallModule()
+    public function uninstall()
     {
         if (!parent::uninstall() ||
             !$this->_eraseTabs()
-        )
+        ){
             return false;
+        }
         return true;
     }
 
-    private function _createSingleTab($class, $name, $all_langs)
+    private function createSingleTab()
     {
         $tab = new Tab();
         $tab->active = 1;
-        foreach ($all_langs as $language){
-            $tab->name[$language['id_lang']] = $name;
+        $languages = Language::getLanguages(false);
+        if (is_array($languages)) {
+            foreach ($languages as $language) {
+                $tab->name[$language['id_lang']] = $this->tabName;
+            }
         }
-        $tab->class_name = $class;
-        $tab->module = $this->name;
-        $tab->id_parent = Tab::getIdFromClassName('AdminParentStats');
-        if($tab->add()){
-            return $tab->id;
-        }
-        else return false;
+        $tab->class_name = 'AdminTracking';
+        $tab->module = 'cdtracking';
+        $tab->id_parent = Tab::getIdFromClassName("AdminParentStats");
+
+        return (bool)$tab->add();
     }
 
     private function _eraseTabs()
     {
-        // Base Tab
-        $id_tabm = (int)Tab::getIdFromClassName('AdminTrackingProspects');
-        if($id_tabm)
-        {
-            $tabm = new Tab($id_tabm);
-            $tabm->delete();
+        $id_tab = (int)Tab::getIdFromClassName('AdminTracking');
+        if ($id_tab) {
+            $tab = new Tab($id_tab);
+            $tab->delete();
         }
-
         return true;
     }
 }
