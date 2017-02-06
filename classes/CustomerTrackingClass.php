@@ -65,6 +65,7 @@ class CustomerTrackingClass implements ICustomerTrackingClass
 				AND c.`tracer` != ""
 				AND o.`date_add` BETWEEN "'.$countTrackingBetweenDate['debut'].' 00:00:00"
 				AND "'.$countTrackingBetweenDate['fin'].' 23:59:59"
+				AND `id_code_action` = 2
 				';
         $query = Db::getInstance()->executeS($sql);
 
