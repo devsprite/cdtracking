@@ -194,15 +194,15 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $trackingJsonValues = array();
         $trackingJsonHeader = array();
         foreach ($countTrackingBetweenDate as $key => $value) {
-            $trackingJsonValues[] = round(100 / intval($nbrProspects) * intval($value['total']), 2);
-            $trackingJsonHeader[] = "% " . intval($value['tracer']);
+            $trackingJsonValues[] = round(100 / (int)$nbrProspects * (int)$value['total'], 2);
+            $trackingJsonHeader[] = "% " . (int)$value['tracer'];
         }
 
         $this->smarty->assign(array(
             "countTrackingBetweenDate" => $countTrackingBetweenDate,
             "countTrackingNbrProspects" => $nbrProspects,
-            "countTrackingBetweenDateJsonValue" => json_encode($trackingJsonValues),
-            "countTrackingBetweenDateJsonHeader" => json_encode($trackingJsonHeader),
+            "countTrackingBetweenDateJsonValue" => Tools::jsonEncode($trackingJsonValues),
+            "countTrackingBetweenDateJsonHeader" => Tools::jsonEncode($trackingJsonHeader),
         ));
         return $this->smarty->fetch($this->path_tpl . "trackingChart.tpl");
     }
@@ -223,8 +223,8 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $this->smarty->assign(array(
             "trackingProspects" => $arrayTrackingProspects,
             "totalTrackingProspects" => $this->totalTrackingProspects($arrayTrackingProspects),
-            "trackingProspectsHeader" => json_encode($arrayTrackingProspectsHeader),
-            "trackingProspectsValues" => json_encode($arrayTrackingProspectsValues),
+            "trackingProspectsHeader" => Tools::jsonEncode($arrayTrackingProspectsHeader),
+            "trackingProspectsValues" => Tools::jsonEncode($arrayTrackingProspectsValues),
         ));
 
         return $this->smarty->fetch($this->path_tpl . "prospectsChart.tpl");
@@ -235,7 +235,7 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $arrayTracking = array();
         foreach ($prospects as $prospect => $value) {
             if ($value['tracer'] != 0 || !empty($value['tracer']))
-            $arrayTracking[intval($value['tracer'])] = intval($value['tracer']);
+            $arrayTracking[(int)$value['tracer']] = (int)$value['tracer'];
         }
 
         return $arrayTracking;
@@ -246,7 +246,7 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $arrayTracking = array();
         foreach ($arrayNumberTracking as $numberTracking) {
             foreach ($prospects as $prospect) {
-                if ($numberTracking == intval($prospect['tracer'])) {
+                if ($numberTracking == (int)$prospect['tracer']) {
                     $arrayTracking[$numberTracking] += 1;
                 }
             }
