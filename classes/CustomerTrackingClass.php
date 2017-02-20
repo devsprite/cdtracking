@@ -55,7 +55,9 @@ class CustomerTrackingClass implements ICustomerTrackingClass
     public function getProspectsByDate($countTrackingBetweenDate)
     {
         $sql = 'SELECT ROUND(o.`total_products` - o.`total_discounts_tax_excl`,2) AS total,
-                o.`id_order`, c.`tracer`, o.`id_employee`, c.`id_customer`, o.`date_add`,
+                o.`id_order`, c.`tracer`, o.`id_employee`, c.`id_customer`, o.`date_add`, 
+                floor(datediff(current_date(), birthday)/ 365) AS age,
+                birthday,
                 IF((SELECT so.`id_order` FROM `' . _DB_PREFIX_ . 'orders` so 
                 WHERE so.`id_customer` = o.`id_customer` 
                 AND so.`id_order` < o.`id_order` LIMIT 1) > 0, 0, 1) as new

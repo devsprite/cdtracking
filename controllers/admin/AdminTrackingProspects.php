@@ -27,12 +27,19 @@ if (!defined('_PS_VERSION_')) {
 }
 
 require_once(dirname(__FILE__) . "/../../classes/CustomerTrackingClass.php");
+require_once(dirname(__FILE__) . "/../../charts/ChartProspectsByAge.php");
+require_once(dirname(__FILE__) . "/../../charts/ChartTrackingProspects.php");
+require_once(dirname(__FILE__) . "/../../charts/ChartOrdersByTracking.php");
+require_once(dirname(__FILE__) . "/../../utils/DateRange.php");
+
 
 class AdminTrackingProspectsController extends ModuleAdminController
 {
-    public $smarty;
+    private $smarty;
     private $path_tpl;
     private $html = "";
+    private $dateRange;
+    private $dateEmployee;
 
     public function __construct()
     {
@@ -42,6 +49,8 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $this->context = Context::getContext();
         $this->smarty = $this->context->smarty;
         $this->path_tpl = _PS_MODULE_DIR_ . 'cdtracking/views/templates/admin/tracking/';
+        $this->dateRange = new DateRange();
+        $this->dateEmployee = $this->dateRange->getDateBetweenFromEmployee();
 
         parent::__construct();
     }
@@ -52,128 +61,29 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $this->context->controller->addJS(_PS_MODULE_DIR_ . 'cdtracking/views/js/Chart.min.js');
         $this->context->controller->addJS(_PS_MODULE_DIR_ . 'cdtracking/views/js/script.js');
         $this->context->controller->addCSS(_PS_MODULE_DIR_ . 'cdtracking/views/css/style.css');
-
         $this->setDefaultValues();
-        $this->html .= $this->displayCalendar();
 
+        $chartAgeProspects = new ChartProspectsByAge();
+        $trackingProspects = new ChartTrackingProspects();
+        $orderByTracking = new ChartOrdersByTracking();
         $prospects = new CustomerTrackingClass();
-        $countTrackingBetweenDate = $prospects->countTrackingBetweenDate($this->getDateBetweenFromEmployee());
 
-        $this->html .= $this->displayChartCountTrackingBetweenDate($countTrackingBetweenDate, $prospects);
-        $this->html .= $this->displayChartEmployeeByTracking($this->getDateBetweenFromEmployee(), $prospects);
+        $countTrackingBetweenDate = $prospects->countTrackingBetweenDate($this->dateEmployee);
+
+        $this->html .= $this->dateRange->displayCalendar();
+        $this->html .= $trackingProspects->displayChartCountTrackingBetweenDate($countTrackingBetweenDate, $prospects, $this->dateEmployee);
+        $this->html .= $orderByTracking->displayChartOrdersByTracking($this->dateEmployee, $prospects);
+        $this->html .= $chartAgeProspects->displayChartAgeProspects($this->dateEmployee, $prospects);
 
         $this->content = $this->html;
         parent::initContent();
     }
 
-    private function getDateBetweenFromEmployee()
-    {
-        $dateBetween = array();
-        $dateBetween['debut'] = $this->context->employee->stats_date_from;
-        $dateBetween['fin'] = $this->context->employee->stats_date_to;
-        $this->smarty->assign(array(
-            "dateBetween" => $dateBetween
-        ));
-
-        return $dateBetween;
-    }
 
     public function postProcess()
     {
-        $this->processDateRange();
-
+        $this->dateRange->processDateRange();
         return parent::postProcess();
-    }
-
-    public function displayCalendar()
-    {
-        return AdminTrackingProspectsController::displayCalendarForm(array(
-            'Calendar' => $this->l('Calendrier', 'AdminTrackingProspects'),
-            'Day' => $this->l('Jour', 'AdminTrackingProspects'),
-            'Month' => $this->l('Mois', 'AdminTrackingProspects'),
-            'Year' => $this->l('Année', 'AdminTrackingProspects'),
-            'From' => $this->l('Du', 'AdminTrackingProspects'),
-            'To' => $this->l('Au', 'AdminTrackingProspects'),
-            'Save' => $this->l('Enregistrer', 'AdminTrackingProspects')
-        ), $this->token);
-    }
-
-    public function displayCalendarForm($translations, $token, $action = null, $table = null, $identifier = null, $id = null)
-    {
-        $context = $this->context;
-        $context->controller->addJqueryUI('ui.datepicker');
-        if ($identifier === null && Tools::getValue('module')) {
-            $identifier = 'module';
-            $id = Tools::getValue('module');
-        }
-
-        $action = Context::getContext()->link->getAdminLink('AdminTrackingProspects');
-        $action .= ($action && $table ? '&' . Tools::safeOutput($action) : '');
-        $action .= ($identifier && $id ? '&' . Tools::safeOutput($identifier) . '=' . (int)$id : '');
-        $module = Tools::getValue('module');
-        $action .= ($module ? '&module=' . Tools::safeOutput($module) : '');
-        $action .= (($id_product = Tools::getValue('id_product')) ? '&id_product=' . Tools::safeOutput($id_product) : '');
-        $this->smarty->assign(array(
-            'current' => self::$currentIndex,
-            'token' => $token,
-            'action' => $action,
-            'table' => $table,
-            'identifier' => $identifier,
-            'id' => $id,
-            'translations' => $translations,
-            'datepickerFrom' => Tools::getValue('datepickerFrom', $context->employee->stats_date_from),
-            'datepickerTo' => Tools::getValue('datepickerTo', $context->employee->stats_date_to)
-        ));
-
-        $tpl = $this->smarty->fetch($this->path_tpl . 'calendar/form_date_range_picker.tpl');
-        return $tpl;
-    }
-
-    public function processDateRange()
-    {
-        if (Tools::isSubmit('submitDatePicker')) {
-            if ((!Validate::isDate($from = Tools::getValue('datepickerFrom')) ||
-                    !Validate::isDate($to = Tools::getValue('datepickerTo'))) ||
-                (strtotime($from) > strtotime($to))
-            ) {
-                $this->errors[] = Tools::displayError('The specified date is invalid.');
-            }
-        }
-        if (Tools::isSubmit('submitDateDay')) {
-            $from = date('Y-m-d');
-            $to = date('Y-m-d');
-        }
-        if (Tools::isSubmit('submitDateDayPrev')) {
-            $yesterday = time() - 60 * 60 * 24;
-            $from = date('Y-m-d', $yesterday);
-            $to = date('Y-m-d', $yesterday);
-        }
-        if (Tools::isSubmit('submitDateMonth')) {
-            $from = date('Y-m-01');
-            $to = date('Y-m-t');
-        }
-        if (Tools::isSubmit('submitDateMonthPrev')) {
-            $m = (date('m') == 1 ? 12 : date('m') - 1);
-            $y = ($m == 12 ? date('Y') - 1 : date('Y'));
-            $from = $y . '-' . $m . '-01';
-            $to = $y . '-' . $m . date('-t', mktime(12, 0, 0, $m, 15, $y));
-        }
-        if (Tools::isSubmit('submitDateYear')) {
-            $from = date('Y-01-01');
-            $to = date('Y-12-31');
-        }
-        if (Tools::isSubmit('submitDateYearPrev')) {
-            $from = (date('Y') - 1) . date('-01-01');
-            $to = (date('Y') - 1) . date('-12-31');
-        }
-        if (isset($from) && isset($to) && !count($this->errors)) {
-            $this->context->employee->stats_date_from = $from;
-            $this->context->employee->stats_date_to = $to;
-            $this->context->employee->update();
-            if (!$this->isXmlHttpRequest()) {
-                Tools::redirectAdmin($_SERVER['REQUEST_URI']);
-            }
-        }
     }
 
     private function setDefaultValues()
@@ -186,78 +96,5 @@ class AdminTrackingProspectsController extends ModuleAdminController
             $this->context->employee->update();
             setcookie('stats_date', 'on', time() + 3600);
         }
-    }
-
-    private function displayChartCountTrackingBetweenDate($countTrackingBetweenDate, CustomerTrackingClass $prospects)
-    {
-        $nbrProspects = $prospects->readNbrTotalProspects($this->getDateBetweenFromEmployee());
-        $trackingJsonValues = array();
-        $trackingJsonHeader = array();
-        foreach ($countTrackingBetweenDate as $key => $value) {
-            $trackingJsonValues[] = round(100 / (int)$nbrProspects * (int)$value['total'], 2);
-            $trackingJsonHeader[] = "% " . (int)$value['tracer'];
-        }
-
-        $this->smarty->assign(array(
-            "countTrackingBetweenDate" => $countTrackingBetweenDate,
-            "countTrackingNbrProspects" => $nbrProspects,
-            "countTrackingBetweenDateJsonValue" => Tools::jsonEncode($trackingJsonValues),
-            "countTrackingBetweenDateJsonHeader" => Tools::jsonEncode($trackingJsonHeader),
-        ));
-        return $this->smarty->fetch($this->path_tpl . "trackingChart.tpl");
-    }
-
-    private function displayChartEmployeeByTracking($countTrackingBetweenDate, CustomerTrackingClass $prospect)
-    {
-        $prospects = $prospect->getProspectsByDate($countTrackingBetweenDate);
-        $arrayNumberTracking = $this->readNumberTracking($prospects);
-        $arrayTrackingProspects = $this->trackingProspects($prospects, $arrayNumberTracking);
-
-        $arrayTrackingProspectsValues = array();
-        $arrayTrackingProspectsHeader = array();
-        foreach ($arrayTrackingProspects as $key => $value) {
-            $arrayTrackingProspectsHeader[] = $key;
-            $arrayTrackingProspectsValues[] = $value;
-        }
-
-        $this->smarty->assign(array(
-            "trackingProspects" => $arrayTrackingProspects,
-            "totalTrackingProspects" => $this->totalTrackingProspects($arrayTrackingProspects),
-            "trackingProspectsHeader" => Tools::jsonEncode($arrayTrackingProspectsHeader),
-            "trackingProspectsValues" => Tools::jsonEncode($arrayTrackingProspectsValues),
-        ));
-
-        return $this->smarty->fetch($this->path_tpl . "prospectsChart.tpl");
-    }
-
-    private function readNumberTracking($prospects)
-    {
-        $arrayTracking = array();
-        foreach ($prospects as $prospect => $value) {
-            if ($value['tracer'] != 0 || !empty($value['tracer']))
-            $arrayTracking[(int)$value['tracer']] = (int)$value['tracer'];
-        }
-
-        return $arrayTracking;
-    }
-
-    private function trackingProspects($prospects, $arrayNumberTracking)
-    {
-        $arrayTracking = array();
-        foreach ($arrayNumberTracking as $numberTracking) {
-            foreach ($prospects as $prospect) {
-                if ($numberTracking == (int)$prospect['tracer']) {
-                    $arrayTracking[$numberTracking] += 1;
-                }
-            }
-        }
-
-        return $arrayTracking;
-    }
-
-    private function totalTrackingProspects($arrayTrackingProspects)
-    {
-        $total = 0;
-        return array_sum($arrayTrackingProspects);
     }
 }

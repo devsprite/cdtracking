@@ -3,5 +3,6 @@
 }
 
 .tableChart {
+    table-layout:fixed;
     height: 100px;
 }
