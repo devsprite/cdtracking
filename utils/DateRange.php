@@ -106,8 +106,8 @@ class DateRange extends AdminController
     public function getDateBetweenFromEmployee()
     {
         $dateBetween = array();
-        $dateBetween['debut'] = $this->context->employee->stats_date_from;
-        $dateBetween['fin'] = $this->context->employee->stats_date_to;
+        $dateBetween['debut'] = $this->context->employee->stats_date_from . ' 00:00:00';
+        $dateBetween['fin'] = $this->context->employee->stats_date_to. ' 23:59:59';
         $this->smarty->assign(array(
             "dateBetween" => $dateBetween
         ));

@@ -30,6 +30,7 @@ require_once(dirname(__FILE__) . "/../../classes/CustomerTrackingClass.php");
 require_once(dirname(__FILE__) . "/../../charts/ChartProspectsByAge.php");
 require_once(dirname(__FILE__) . "/../../charts/ChartTrackingProspects.php");
 require_once(dirname(__FILE__) . "/../../charts/ChartOrdersByTracking.php");
+require_once(dirname(__FILE__) . "/../../charts/ChartGroupProspects.php");
 require_once(dirname(__FILE__) . "/../../utils/DateRange.php");
 
 
@@ -67,6 +68,7 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $trackingProspects = new ChartTrackingProspects();
         $orderByTracking = new ChartOrdersByTracking();
         $prospects = new CustomerTrackingClass();
+        $chartGroupProspects = new ChartGroupProspects();
 
         $countTrackingBetweenDate = $prospects->countTrackingBetweenDate($this->dateEmployee);
 
@@ -74,6 +76,7 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $this->html .= $trackingProspects->displayChartCountTrackingBetweenDate($countTrackingBetweenDate, $prospects, $this->dateEmployee);
         $this->html .= $orderByTracking->displayChartOrdersByTracking($this->dateEmployee, $prospects);
         $this->html .= $chartAgeProspects->displayChartAgeProspects($this->dateEmployee, $prospects);
+        $this->html .= $chartGroupProspects->displayChartGroupProspects($this->dateEmployee);
 
         $this->content = $this->html;
         parent::initContent();

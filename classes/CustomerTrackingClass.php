@@ -1,11 +1,7 @@
 <?php
 
-interface ICustomerTrackingClass
-{
-    public function countTrackingBetweenDate($dateBetween);
-}
 
-class CustomerTrackingClass implements ICustomerTrackingClass
+class CustomerTrackingClass
 {
     private $tracer;
 
@@ -21,7 +17,7 @@ class CustomerTrackingClass implements ICustomerTrackingClass
     {
         $sql = 'SELECT tracer, COUNT(id_customer) as total 
                 FROM `' . _DB_PREFIX_ . 'customer`
-                WHERE date_add BETWEEN "' . $dateBetween["debut"] . ' 00:00:00" AND "' . $dateBetween["fin"] . ' 23:59:59"
+                WHERE date_add BETWEEN "' . $dateBetween["debut"] . '" AND "' . $dateBetween["fin"] . '"
                 GROUP BY tracer
                 ORDER BY total DESC';
         $results = Db::getInstance()->executeS($sql);
@@ -45,8 +41,8 @@ class CustomerTrackingClass implements ICustomerTrackingClass
     public function readNbrTotalProspects($getDateBetweenFromEmployee)
     {
         $sql = 'SELECT COUNT(id_customer) FROM `' . _DB_PREFIX_ . 'customer`
-                WHERE date_add BETWEEN "' . $getDateBetweenFromEmployee["debut"] . ' 00:00:00" 
-                AND "' . $getDateBetweenFromEmployee["fin"] . ' 23:59:59"';
+                WHERE date_add BETWEEN "' . $getDateBetweenFromEmployee["debut"] . '" 
+                AND "' . $getDateBetweenFromEmployee["fin"] . '"';
         $query = Db::getInstance()->getValue($sql);
 
         return $query;
@@ -65,13 +61,12 @@ class CustomerTrackingClass implements ICustomerTrackingClass
 				WHERE `valid` = 1
 				AND o.`id_customer` = c.`id_customer`
 				AND c.`tracer` != ""
-				AND o.`date_add` BETWEEN "'.$countTrackingBetweenDate['debut'].' 00:00:00"
-				AND "'.$countTrackingBetweenDate['fin'].' 23:59:59"
+				AND o.`date_add` BETWEEN "'.$countTrackingBetweenDate['debut'].'"
+				AND "'.$countTrackingBetweenDate['fin'].'"
 				AND `id_code_action` = 2
 				';
         $query = Db::getInstance()->executeS($sql);
 
         return $this->trimArray($query);
     }
-
 }
