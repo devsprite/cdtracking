@@ -24,7 +24,6 @@
                 {/foreach}
             </tr>
             {/foreach}
-
             </tbody>
         </table>
     </div>

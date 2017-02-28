@@ -91,11 +91,14 @@ class AdminTrackingProspectsController extends ModuleAdminController
 
     public function postProcess()
     {
-        if (Tools::isSubmit('export_csv')){
+        if (Tools::isSubmit('export_csv')) {
             $export = Tools::getValue('export_csv');
-            if ( $export == '1') {
+            if ($export == '1') {
                 $chartGroupProspects = new ChartGroupProspects();
                 $chartGroupProspects->exportCsv($this->dateEmployee);
+            } else if ($export == '2') {
+                $chartProspectsByEmploye = new ChartProspectsByEmployees();
+                $chartProspectsByEmploye->exportCsv($this->dateEmployee);
             }
         }
         $this->dateRange->processDateRange();
