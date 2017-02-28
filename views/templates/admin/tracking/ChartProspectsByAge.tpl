@@ -3,9 +3,9 @@
     var chartAgeProspectsValues = {$chartAgeProspectsValues};
 </script>
 <div class="row">
-    <div id="ChartProspectsByAge" class="panel panel-primary col-xs-5 chart">
+    <div id="ChartProspectsByAge" class="panel panel-primary col-xs-6 chart">
         <div class="panel-heading">
-            <h4>Clients par age du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
+            <h4>Prospects par age du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
                 {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
         </div>
         <div class="panel-body">
@@ -24,7 +24,7 @@
                     <td class="text-center">{((100 / $tableAgeProspectsValuesTotal) * $item)|string_format:"%.2f"} %</td>
                     {/foreach}
                 </tr>
-                <tr class="text-left"><td colspan="4"><strong>Total : {$tableAgeProspectsValuesTotal}</strong></td></tr>
+                <tr class="text-left"><td colspan="4">Total : <strong>{$tableAgeProspectsValuesTotal}</strong></td></tr>
                 </tbody>
             </table>
             <div class="">
@@ -32,4 +32,3 @@
             </div>
         </div>
     </div>
-</div>

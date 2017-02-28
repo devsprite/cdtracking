@@ -1,6 +1,17 @@
 .chart {
     height: 650px;
 }
+.col-xs-6 {
+    width: 49%!important;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+@media (max-width: 680px) {
+    .col-xs-6 {
+        width: 100%!important;
+    }
+}
 
 .tableChart {
     table-layout:fixed;

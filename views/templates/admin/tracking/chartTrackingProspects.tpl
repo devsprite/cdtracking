@@ -3,7 +3,7 @@
     var countTrackingBetweenDateJsonValue = {$countTrackingBetweenDateJsonValue};
 </script>
 <div class="row">
-    <div id="ChartTrackingProspects" class="panel panel-primary col-xs-5 chart">
+    <div id="ChartTrackingProspects" class="panel panel-primary col-xs-6 chart">
         <div class="panel-heading">
             <h4>Nombre de prospects par numéro de tracking du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
                 {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
@@ -24,7 +24,7 @@
                     {/foreach}
                 </tr>
                 <tr>
-                    <td colspan="3">Total Clients : <strong>{$countTrackingNbrProspects}</strong></td>
+                    <td colspan="3">Total : <strong>{$countTrackingNbrProspects}</strong></td>
                 </tr>
                 </tbody>
             </table>

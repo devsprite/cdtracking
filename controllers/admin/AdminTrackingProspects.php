@@ -27,10 +27,12 @@ if (!defined('_PS_VERSION_')) {
 }
 
 require_once(dirname(__FILE__) . "/../../classes/CustomerTrackingClass.php");
+require_once(dirname(__FILE__) . "/../../charts/ChartCustomersByAge.php");
 require_once(dirname(__FILE__) . "/../../charts/ChartProspectsByAge.php");
 require_once(dirname(__FILE__) . "/../../charts/ChartTrackingProspects.php");
 require_once(dirname(__FILE__) . "/../../charts/ChartOrdersByTracking.php");
 require_once(dirname(__FILE__) . "/../../charts/ChartGroupProspects.php");
+require_once(dirname(__FILE__) . "/../../charts/ChartProspectsByEmployees.php");
 require_once(dirname(__FILE__) . "/../../utils/DateRange.php");
 
 
@@ -64,11 +66,13 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $this->context->controller->addCSS(_PS_MODULE_DIR_ . 'cdtracking/views/css/style.css');
         $this->setDefaultValues();
 
+        $chartAgeCustomers = new ChartCustomersByAge();
         $chartAgeProspects = new ChartProspectsByAge();
         $trackingProspects = new ChartTrackingProspects();
         $orderByTracking = new ChartOrdersByTracking();
         $prospects = new CustomerTrackingClass();
         $chartGroupProspects = new ChartGroupProspects();
+        $chartProspectsByEmployees = new ChartProspectsByEmployees();
 
         $countTrackingBetweenDate = $prospects->countTrackingBetweenDate($this->dateEmployee);
 
@@ -76,7 +80,9 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $this->html .= $trackingProspects->displayChartCountTrackingBetweenDate($countTrackingBetweenDate, $prospects, $this->dateEmployee);
         $this->html .= $orderByTracking->displayChartOrdersByTracking($this->dateEmployee, $prospects);
         $this->html .= $chartAgeProspects->displayChartAgeProspects($this->dateEmployee, $prospects);
+        $this->html .= $chartAgeCustomers->displayChartAgeCustomers($this->dateEmployee, $prospects);
         $this->html .= $chartGroupProspects->displayChartGroupProspects($this->dateEmployee);
+        $this->html .= $chartProspectsByEmployees->displayChartProspectsByEmployees($this->dateEmployee);
 
         $this->content = $this->html;
         parent::initContent();
@@ -85,7 +91,15 @@ class AdminTrackingProspectsController extends ModuleAdminController
 
     public function postProcess()
     {
+        if (Tools::isSubmit('export_csv')){
+            $export = Tools::getValue('export_csv');
+            if ( $export == '1') {
+                $chartGroupProspects = new ChartGroupProspects();
+                $chartGroupProspects->exportCsv($this->dateEmployee);
+            }
+        }
         $this->dateRange->processDateRange();
+
         return parent::postProcess();
     }
 

@@ -14,7 +14,7 @@ class ChartOrdersByTracking extends AdminController
 
     public function displayChartOrdersByTracking($countTrackingBetweenDate, CustomerTrackingClass $prospect)
     {
-        $prospects = $prospect->getProspectsByDate($countTrackingBetweenDate);
+        $prospects = $prospect->getCustomersByDate($countTrackingBetweenDate);
         $arrayNumberTracking = $this->readNumberTracking($prospects);
         $arrayTrackingProspects = $this->trackingProspects($prospects, $arrayNumberTracking);
 

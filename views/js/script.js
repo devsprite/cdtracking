@@ -95,6 +95,35 @@ $(document).ready(function () {
     });
 
 
+    var ageCustomers = {
+        labels: chartAgeCustomersHeaders,
+        datasets: [
+            {
+                label: 'Age',
+                data: chartAgeCustomersValues,
+                backgroundColor: backgroundColor,
+                hoverBackgroundColor: hoverBackgroundColor,
+                borderWidth: 1
+            }]
+    };
+
+    var canvaAgeCustomersChart = document.getElementById("chartAgeCustomers");
+    var ageCustomersChart = new Chart(canvaAgeCustomersChart,{
+        type: 'doughnut',
+        data: ageCustomers,
+        animation:{
+            animateScale:true
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+        }
+    });
+
+
     var ageProspects = {
         labels: chartAgeProspectsHeaders,
         datasets: [

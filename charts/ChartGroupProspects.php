@@ -17,30 +17,41 @@ class ChartGroupProspects extends AdminController
         $this->path_tpl = _PS_MODULE_DIR_ . 'cdtracking/views/templates/admin/tracking/';
     }
 
+    public function exportCsv($dateEmployee)
+    {
+                $csv = new ExportCsvClass();
+                $tracers = $this->getAllTracers();
+                $chartsGroups = $this->getProspectsByGroups($dateEmployee);
+                $csv->csvExport($tracers, $chartsGroups, 'prospects_par_groupe');
+    }
+
     public function displayChartGroupProspects($dateEmployee)
     {
+        $chartsGroups = $this->getProspectsByGroups($dateEmployee);
+        $this->smarty->assign(array(
+            'prospectsByGroups' => $chartsGroups,
+            'tracers' => $this->getAllTracers(),
+            'LinkFile' => Tools::safeOutput($_SERVER['REQUEST_URI'])
+        ));
+
+        return $this->smarty->fetch($this->path_tpl . "chartGroupProspects.tpl");
+    }
+
+    private function getProspectsByGroups($dateEmployee)
+    {
         $lang = Language::getLanguages(true);
-        $groups = Group::getGroups($lang[0]['id_lang']);
         $chartsGroups = array();
         $tracers = $this->getAllTracers();
+        $groups = Group::getGroups($lang[0]['id_lang']);
 
         foreach ($groups as $group) {
-             $groups = $this->getProspectsByGroupId($group['id_group'], $lang[0]['id_lang'], $dateEmployee);
+            $groups = $this->getProspectsByGroupId($group['id_group'], $lang[0]['id_lang'], $dateEmployee);
             foreach ($tracers as $tracer => $value) {
                 $chartsGroups[$group['name']][] = array( '0' => $tracer , '1' => $groups[$tracer]);
             }
         }
 
-//        $csv = new ExportCsvClass();
-//        $csv->csvExport($tracers, $chartsGroups, 'prospects_par_groupe');
-
-
-        $this->smarty->assign(array(
-            'prospectsByGroups' => $chartsGroups,
-            'tracers' => $tracers
-        ));
-
-        return $this->smarty->fetch($this->path_tpl . "chartGroupProspects.tpl");
+        return $chartsGroups;
     }
 
     protected function getProspectsByGroupId($id_group, $lang, $dateRange)

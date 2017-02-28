@@ -3,7 +3,7 @@
     var trackingProspectsValues = {$trackingProspectsValues};
 </script>
 
-<div  id="ChartOrdersByTracking" class="panel panel-primary col-xs-5 col-xs-offset-1 chart">
+<div  id="ChartOrdersByTracking" class="panel panel-primary col-xs-6 chart">
     <div class="panel-heading">
         <h4>Nbr de Commandes par numéro de tracking {$dateBetween['debut']|date_format:'%d/%m/%Y'} au {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
     </div>
@@ -12,18 +12,18 @@
             <thead>
             <tr>
                 {foreach item=item key=key from=$trackingProspects}
-                <th class="text-center">Tracer n° {$key}</th>
+                <th class="text-center">{$key}</th>
                 {/foreach}
             </tr>
             </thead>
             <tbody>
             <tr>
                 {foreach item=item key=key from=$trackingProspects}
-                <td class="text-center">{$item}</td>
+                <td class="text-center">{((100/$totalTrackingProspects) * $item)|string_format:"%.2f"} %</td>
                 {/foreach}
             </tr>
             <tr>
-                <td colspan="3">Total Clients : {$totalTrackingProspects}</td>
+                <td colspan="3">Total : <strong>{$totalTrackingProspects}</strong></td>
             </tr>
             </tbody>
         </table>

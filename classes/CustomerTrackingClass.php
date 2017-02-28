@@ -41,14 +41,15 @@ class CustomerTrackingClass
     public function readNbrTotalProspects($getDateBetweenFromEmployee)
     {
         $sql = 'SELECT COUNT(id_customer) FROM `' . _DB_PREFIX_ . 'customer`
-                WHERE date_add BETWEEN "' . $getDateBetweenFromEmployee["debut"] . '" 
+                WHERE `tracer` != ""
+                AND date_add BETWEEN "' . $getDateBetweenFromEmployee["debut"] . '" 
                 AND "' . $getDateBetweenFromEmployee["fin"] . '"';
         $query = Db::getInstance()->getValue($sql);
 
         return $query;
     }
 
-    public function getProspectsByDate($countTrackingBetweenDate)
+    public function getCustomersByDate($countTrackingBetweenDate)
     {
         $sql = 'SELECT ROUND(o.`total_products` - o.`total_discounts_tax_excl`,2) AS total,
                 o.`id_order`, c.`tracer`, o.`id_employee`, c.`id_customer`, o.`date_add`, 
@@ -64,6 +65,21 @@ class CustomerTrackingClass
 				AND o.`date_add` BETWEEN "'.$countTrackingBetweenDate['debut'].'"
 				AND "'.$countTrackingBetweenDate['fin'].'"
 				AND `id_code_action` = 2
+				';
+        $query = Db::getInstance()->executeS($sql);
+
+        return $this->trimArray($query);
+    }
+
+    public function getProspectsByDate($countTrackingBetweenDate)
+    {
+        $sql = 'SELECT c.`tracer`, c.`id_customer`, c.`date_add`, 
+                floor(datediff(current_date(), birthday)/ 365) AS age,
+                c.birthday
+				FROM `'._DB_PREFIX_.'customer` AS c
+				WHERE c.`tracer` != ""
+				AND c.`date_add` BETWEEN "'.$countTrackingBetweenDate['debut'].'"
+				AND "'.$countTrackingBetweenDate['fin'].'"
 				';
         $query = Db::getInstance()->executeS($sql);
 
