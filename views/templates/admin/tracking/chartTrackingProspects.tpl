@@ -6,24 +6,30 @@
     <div id="chartTrackingProspects" class="panel panel-primary col-xs-6">
         <div class="panel-heading">
             <h4>
-                <i class="icon-chevron-down toggleChart" data-canvas="countTrackingBetweenDate" title="chartTrackingProspects"></i> Nombre de prospects par numéro de tracking du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
-                {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
+                <i class="icon-chevron-down toggleChart" data-canvas="countTrackingBetweenDate"
+                   title="chartTrackingProspects"></i> Nombre de prospects du
+                {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
+                {$dateBetween['fin']|date_format:'%d/%m/%Y'} <a class="btn btn-primary pull-right"
+                                                                href="{$LinkFile}&export_csv=3"><i
+                    class="icon-file-text"></i></a></h4>
         </div>
         <div class="panel-body">
             <table class="table table-striped tableChart">
-                <thead class="thead">
+                <thead>
                 <tr>
-                    {foreach item=item from=$countTrackingBetweenDate}
-                    <th class="text-center">{$item['tracer']}</th>
-                    {/foreach}
+                    <th>Tracer</th>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-right">Répartition</th>
                 </tr>
                 </thead>
                 <tbody>
+                {foreach item=item from=$countTrackingBetweenDate}
                 <tr>
-                    {foreach item=item from=$countTrackingBetweenDate}
-                    <td class="text-center">{((100/$countTrackingNbrProspects)*$item['total'])|string_format:"%.2f"} %</td>
-                    {/foreach}
+                    <td>{$item['tracer']}</td>
+                    <td class="text-center">{$item['total']}</td>
+                    <td class="text-right">{$item['repartition']} %</td>
                 </tr>
+                {/foreach}
                 <tr>
                     <td colspan="3">Total : <strong>{$countTrackingNbrProspects}</strong></td>
                 </tr>

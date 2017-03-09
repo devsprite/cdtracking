@@ -4,6 +4,19 @@
     }
 }
 
+.panel-heading > h4 > button {
+    position: relative;
+    top: 2px;
+}
+
+.panel-body > table > thead > tr > th, .panel-body > table > tbody > tr > td:nth-child(1) {
+    font-weight: bold!important;
+}
+
+.panel-heading > h4 {
+    padding-top: 3px;
+}
+
 .tableChart {
     table-layout:fixed;
     height: 100px;

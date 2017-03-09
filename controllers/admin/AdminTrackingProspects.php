@@ -74,10 +74,8 @@ class AdminTrackingProspectsController extends ModuleAdminController
         $chartGroupProspects = new ChartGroupProspects();
         $chartProspectsByEmployees = new ChartProspectsByEmployees();
 
-        $countTrackingBetweenDate = $prospects->countTrackingBetweenDate($this->dateEmployee);
-
         $this->html .= $this->dateRange->displayCalendar();
-        $this->html .= $trackingProspects->displayChartCountTrackingBetweenDate($countTrackingBetweenDate, $prospects, $this->dateEmployee);
+        $this->html .= $trackingProspects->displayChartCountTrackingBetweenDate($prospects, $this->dateEmployee);
         $this->html .= $orderByTracking->displayChartOrdersByTracking($this->dateEmployee, $prospects);
         $this->html .= $chartAgeProspects->displayChartAgeProspects($this->dateEmployee, $prospects);
         $this->html .= $chartAgeCustomers->displayChartAgeCustomers($this->dateEmployee, $prospects);
@@ -99,6 +97,10 @@ class AdminTrackingProspectsController extends ModuleAdminController
             } else if ($export == '2') {
                 $chartProspectsByEmploye = new ChartProspectsByEmployees();
                 $chartProspectsByEmploye->exportCsv($this->dateEmployee);
+            } else if ($export == '3') {
+                $prospects = new CustomerTrackingClass();
+                $chartTrackingProspects = new ChartTrackingProspects();
+                $chartTrackingProspects->exportCsv($prospects, $this->dateEmployee);
             }
         }
         $this->dateRange->processDateRange();
