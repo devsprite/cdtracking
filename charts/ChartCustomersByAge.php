@@ -76,6 +76,6 @@ class ChartCustomersByAge extends AdminController
             'chartAgeCustomersValues' => json_encode($repartitionCustomersValues),
         ));
 
-        return $this->smarty->fetch($this->path_tpl . "ChartCustomersByAge.tpl");
+        return $this->smarty->fetch($this->path_tpl . "chartCustomersByAge.tpl");
     }
 }

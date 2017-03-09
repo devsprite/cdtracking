@@ -4,7 +4,7 @@
 </script>
     <div id="ChartCustomersByAge" class="panel panel-primary col-xs-6 chart">
         <div class="panel-heading">
-            <h4>Clients par age du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
+            <h4><i class="icon-chevron-right" title="ChartCustomersByAge"></i> Clients par age du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
                 {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
         </div>
         <div class="panel-body">

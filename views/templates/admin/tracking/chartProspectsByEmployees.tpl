@@ -1,7 +1,7 @@
 <div class="row">
-    <div class="panel">
+    <div id="chartProspectsByEmployees" class="panel">
         <div class="panel-heading">
-            <h4>Prospects par employés et tracers</h4>
+            <h4><i class="icon-chevron-right" title="chartProspectsByEmployees"></i> Prospects par employés et tracers</h4>
         </div>
         <div class="panel-body">
             <div>

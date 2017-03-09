@@ -3,9 +3,9 @@
     var trackingProspectsValues = {$trackingProspectsValues};
 </script>
 
-<div  id="ChartOrdersByTracking" class="panel panel-primary col-xs-6 chart">
+<div  id="chartOrdersByTracking" class="panel panel-primary col-xs-6 chart">
     <div class="panel-heading">
-        <h4>Nbr de Commandes par numéro de tracking {$dateBetween['debut']|date_format:'%d/%m/%Y'} au {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
+        <h4><i class="icon-chevron-right" title="chartOrdersByTracking"></i> Nbr de Commandes par numéro de tracking {$dateBetween['debut']|date_format:'%d/%m/%Y'} au {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
     </div>
     <div class="panel-body">
         <table class="table table-striped tableChart">

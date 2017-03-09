@@ -1,6 +1,6 @@
 <div class="panel">
-    <div class="panel-heading">
-        <h4>Prospects par groupes et tracers</h4>
+    <div id="chartGroupProspects" class="panel-heading">
+        <h4><i class="icon-chevron-right" title="chartGroupProspects"></i> Prospects par groupes et tracers</h4>
     </div>
     <div class="panel-body">
         <div>
