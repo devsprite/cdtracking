@@ -3,9 +3,10 @@
     var countTrackingBetweenDateJsonValue = {$countTrackingBetweenDateJsonValue};
 </script>
 <div class="row">
-    <div id="chartTrackingProspects" class="panel panel-primary col-xs-6 chart">
+    <div id="chartTrackingProspects" class="panel panel-primary col-xs-6">
         <div class="panel-heading">
-            <h4><i class="icon-chevron-right" title="chartTrackingProspects"></i> Nombre de prospects par numéro de tracking du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
+            <h4>
+                <i class="icon-chevron-down toggleChart" data-canvas="countTrackingBetweenDate" title="chartTrackingProspects"></i> Nombre de prospects par numéro de tracking du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
                 {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
         </div>
         <div class="panel-body">
@@ -28,7 +29,7 @@
                 </tr>
                 </tbody>
             </table>
-            <div class="">
+            <div class="canvasChart">
                 <canvas id="countTrackingBetweenDate" height="250"></canvas>
             </div>
         </div>

@@ -1,5 +1,10 @@
 $(document).ready(function () {
 
+    $(".toggleChart").click(function (e) {
+        var canvas = $(e.target).data("canvas");
+        $("#" + canvas).parent().fadeToggle(1000);
+    });
+
     var hoverBackgroundColor = [
         "rgba(229, 47, 35, 0.9)",
         "rgba(211, 84, 0, 0.9)",

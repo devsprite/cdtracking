@@ -1,10 +1,3 @@
-.chart {
-    height: 650px;
-    width: 49%!important;
-    margin-left: 3px;
-    margin-right: 3px;
-}
-
 @media (max-width: 835px) {
     .col-xs-6 {
         width: 100%!important;
@@ -14,4 +7,8 @@
 .tableChart {
     table-layout:fixed;
     height: 100px;
+}
+
+.canvasChart {
+    display: none;
 }

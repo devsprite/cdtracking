@@ -3,9 +3,9 @@
     var chartAgeProspectsValues = {$chartAgeProspectsValues};
 </script>
 <div class="row">
-    <div id="chartProspectsByAge" class="panel panel-primary col-xs-6 chart">
+    <div id="chartProspectsByAge" class="panel panel-primary col-xs-6">
         <div class="panel-heading">
-            <h4><i class="icon-chevron-right" title="chartProspectsByAge"></i> Prospects par age du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
+            <h4><i class="icon-chevron-down toggleChart" data-canvas="chartAgeProspects" title="chartProspectsByAge"></i> Prospects par age du {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
                 {$dateBetween['fin']|date_format:'%d/%m/%Y'}</h4>
         </div>
         <div class="panel-body">
@@ -27,7 +27,7 @@
                 <tr class="text-left"><td colspan="4">Total : <strong>{$tableAgeProspectsValuesTotal}</strong></td></tr>
                 </tbody>
             </table>
-            <div class="">
+            <div class="canvasChart">
                 <canvas id="chartAgeProspects" height="250"></canvas>
             </div>
         </div>
