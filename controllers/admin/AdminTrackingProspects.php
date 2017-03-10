@@ -101,6 +101,10 @@ class AdminTrackingProspectsController extends ModuleAdminController
                 $prospects = new CustomerTrackingClass();
                 $chartTrackingProspects = new ChartTrackingProspects();
                 $chartTrackingProspects->exportCsv($prospects, $this->dateEmployee);
+            } else if ($export == '4') {
+                $prospects = new CustomerTrackingClass();
+                $chartOrdersByTracking = new ChartOrdersByTracking();
+                $chartOrdersByTracking->exportCsv($prospects, $this->dateEmployee);
             }
         }
         $this->dateRange->processDateRange();

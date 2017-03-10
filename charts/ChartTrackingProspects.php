@@ -50,7 +50,5 @@ class ChartTrackingProspects extends AdminController
 
         $csv = new ExportCsvClass();
         $csv->exportCsv($titles, $countTracking, 'Nombre de prospects');
-        var_dump($countTracking);
-        die();
     }
 }

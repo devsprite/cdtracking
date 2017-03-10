@@ -7,11 +7,10 @@
         <div class="panel-heading">
             <h4>
                 <i class="icon-chevron-down toggleChart" data-canvas="countTrackingBetweenDate"
-                   title="chartTrackingProspects"></i> Nombre de prospects du
+                   title="chartTrackingProspects"></i> Nombre de prospect du
                 {$dateBetween['debut']|date_format:'%d/%m/%Y'} au
-                {$dateBetween['fin']|date_format:'%d/%m/%Y'} <a class="btn btn-primary pull-right"
-                                                                href="{$LinkFile}&export_csv=3"><i
-                    class="icon-file-text"></i></a></h4>
+                {$dateBetween['fin']|date_format:'%d/%m/%Y'}
+                <a class="btn btn-primary pull-right" href="{$LinkFile}&export_csv=3"><i class="icon-file-text"></i></a></h4>
         </div>
         <div class="panel-body">
             <table class="table table-striped tableChart">
