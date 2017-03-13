@@ -91,6 +91,7 @@ class AdminTrackingProspectsController extends ModuleAdminController
     {
         if (Tools::isSubmit('export_csv')) {
             $export = Tools::getValue('export_csv');
+            $prospects = new CustomerTrackingClass();
             if ($export == '1') {
                 $chartGroupProspects = new ChartGroupProspects();
                 $chartGroupProspects->exportCsv($this->dateEmployee);
@@ -98,13 +99,14 @@ class AdminTrackingProspectsController extends ModuleAdminController
                 $chartProspectsByEmploye = new ChartProspectsByEmployees();
                 $chartProspectsByEmploye->exportCsv($this->dateEmployee);
             } else if ($export == '3') {
-                $prospects = new CustomerTrackingClass();
                 $chartTrackingProspects = new ChartTrackingProspects();
                 $chartTrackingProspects->exportCsv($prospects, $this->dateEmployee);
             } else if ($export == '4') {
-                $prospects = new CustomerTrackingClass();
                 $chartOrdersByTracking = new ChartOrdersByTracking();
                 $chartOrdersByTracking->exportCsv($prospects, $this->dateEmployee);
+            } else if ($export == '5') {
+                $chartAgeProspects = new ChartProspectsByAge();
+                $chartAgeProspects->exportCsv($prospects, $this->dateEmployee);
             }
         }
         $this->dateRange->processDateRange();

@@ -58,12 +58,12 @@ class CustomerTrackingClass
                 IF((SELECT so.`id_order` FROM `' . _DB_PREFIX_ . 'orders` so 
                 WHERE so.`id_customer` = o.`id_customer` 
                 AND so.`id_order` < o.`id_order` LIMIT 1) > 0, 0, 1) as new
-				FROM `' . _DB_PREFIX_ . 'orders` AS o, `'._DB_PREFIX_.'customer` AS c
+				FROM `' . _DB_PREFIX_ . 'orders` AS o, `' . _DB_PREFIX_ . 'customer` AS c
 				WHERE `valid` = 1
 				AND o.`id_customer` = c.`id_customer`
 				AND c.`tracer` != ""
-				AND o.`date_add` BETWEEN "'.$countTrackingBetweenDate['debut'].'"
-				AND "'.$countTrackingBetweenDate['fin'].'"
+				AND o.`date_add` BETWEEN "' . $countTrackingBetweenDate['debut'] . '"
+				AND "' . $countTrackingBetweenDate['fin'] . '"
 				AND `id_code_action` = 2
 				';
         $query = Db::getInstance()->executeS($sql);
@@ -71,15 +71,15 @@ class CustomerTrackingClass
         return $this->trimArray($query);
     }
 
-    public function getProspectsByDate($countTrackingBetweenDate)
+    public function getProspectsByDate($countTrackingBetweenDate, $tracer = 0)
     {
         $sql = 'SELECT c.`tracer`, c.`id_customer`, c.`date_add`, 
                 floor(datediff(current_date(), birthday)/ 365) AS age,
                 c.birthday
-				FROM `'._DB_PREFIX_.'customer` AS c
-				WHERE c.`tracer` != ""
-				AND c.`date_add` BETWEEN "'.$countTrackingBetweenDate['debut'].'"
-				AND "'.$countTrackingBetweenDate['fin'].'"
+				FROM `' . _DB_PREFIX_ . 'customer` AS c
+				WHERE c.`tracer` = "' . $tracer . '"
+				AND c.`date_add` BETWEEN "' . $countTrackingBetweenDate['debut'] . '"
+				AND "' . $countTrackingBetweenDate['fin'] . '"
 				';
         $query = Db::getInstance()->executeS($sql);
 
