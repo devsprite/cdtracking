@@ -55,4 +55,15 @@ class TracerClass extends AdminController
         return $arrayTracers;
     }
 
+    public static function getNbrProspectsByTracer($tracer, $dateRange)
+    {
+        $sql = 'SELECT COUNT(id_customer) from ps_customer 
+                WHERE tracer = "' . $tracer . '"
+                AND date_add BETWEEN "' . $dateRange['debut'] . '" AND "' . $dateRange['fin'] . '"';
+        $req = Db::getInstance()->getValue($sql);
+
+        return $req;
+
+    }
+
 }

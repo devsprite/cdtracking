@@ -20,7 +20,7 @@ class ChartGroupProspects extends AdminController
     public function exportCsv($dateEmployee)
     {
                 $csv = new ExportCsvClass();
-                $tracers = $this->getAllTracers();
+                $tracers = $this->getAllTracers($dateEmployee);
                 $chartsGroups = $this->getProspectsByGroups($dateEmployee);
                 $csv->csvExport($tracers, $chartsGroups, 'prospects_par_groupe');
     }
@@ -30,7 +30,7 @@ class ChartGroupProspects extends AdminController
         $chartsGroups = $this->getProspectsByGroups($dateEmployee);
         $this->smarty->assign(array(
             'prospectsByGroups' => $chartsGroups,
-            'tracers' => $this->getAllTracers(),
+            'tracers' => $this->getAllTracers($dateEmployee),
             'LinkFile' => Tools::safeOutput($_SERVER['REQUEST_URI'])
         ));
 
@@ -41,13 +41,16 @@ class ChartGroupProspects extends AdminController
     {
         $lang = Language::getLanguages(true);
         $chartsGroups = array();
-        $tracers = $this->getAllTracers();
+        $tracers = $this->getAllTracers($dateEmployee);
         $groups = Group::getGroups($lang[0]['id_lang']);
 
         foreach ($groups as $group) {
             $groups = $this->getProspectsByGroupId($group['id_group'], $lang[0]['id_lang'], $dateEmployee);
             foreach ($tracers as $tracer => $value) {
-                $chartsGroups[$group['name']][] = array( '0' => $tracer , '1' => $groups[$tracer]);
+                $chartsGroups[$group['name']][] = array(
+                    '0' => $tracer ,
+                    '1' => $groups[$tracer],
+                    '2' => round((($groups[$tracer]*100)/$value), 2));
             }
         }
 
@@ -67,7 +70,7 @@ class ChartGroupProspects extends AdminController
         return $result;
     }
 
-    private function getAllTracers()
+    private function getAllTracers($dateRange)
     {
         $tracers = TracerClass::getAllTracer();
         $result = array();
@@ -75,7 +78,7 @@ class ChartGroupProspects extends AdminController
             if ($tracer === '') {
                 $tracer = 'null';
             }
-            $result[$tracer] = 0;
+            $result[$tracer] = TracerClass::getNbrProspectsByTracer($tracer, $dateRange);
         }
 
         return $result;

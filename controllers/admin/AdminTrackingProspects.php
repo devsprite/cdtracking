@@ -86,7 +86,6 @@ class AdminTrackingProspectsController extends ModuleAdminController
         parent::initContent();
     }
 
-
     public function postProcess()
     {
         if (Tools::isSubmit('export_csv')) {
