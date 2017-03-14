@@ -16,8 +16,8 @@
                     <th class="text-center" colspan="2">25-34</th>
                     <th class="text-center" colspan="2">35-44</th>
                     <th class="text-center" colspan="2">45-54</th>
-                    <th class="text-center" colspan="2">55-65</th>
-                    <th class="text-center" colspan="2">>65</th>
+                    <th class="text-center" colspan="2">55-64</th>
+                    <th class="text-center" colspan="2">> 64</th>
                     <th class="text-center" colspan="2">Inconnu</th>
                     <th class="text-center" colspan="2">Total</th>
                 </tr>

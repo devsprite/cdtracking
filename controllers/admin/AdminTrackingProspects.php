@@ -107,6 +107,9 @@ class AdminTrackingProspectsController extends ModuleAdminController
             } else if ($export == '5') {
                 $chartAgeProspects = new ChartProspectsByAge();
                 $chartAgeProspects->exportCsv($prospects, $this->dateEmployee);
+            } else if ($export == '6') {
+                $chartAgeCustomers = new ChartCustomersByAge();
+                $chartAgeCustomers->exportCsv($prospects, $this->dateEmployee);
             }
         }
         $this->dateRange->processDateRange();

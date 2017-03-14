@@ -18,7 +18,7 @@ class ChartProspectsByAge extends AdminController
         $tracers = TracerClass::getAllTracer();
         $results = array();
         foreach ($tracers as $tracer) {
-            $prospects = $p->getProspectsByDate($getDateBetweenFromEmployee, $tracer);
+            $prospects = $p->getProspectsByTracer($getDateBetweenFromEmployee, $tracer);
             $results[$tracer] = $this->getRepartitionProspects($prospects);
         }
 
@@ -48,8 +48,8 @@ class ChartProspectsByAge extends AdminController
             '25-34' => 0,
             '35-44' => 0,
             '45-54' => 0,
-            '55-65' => 0,
-            '> 65' => 0,
+            '55-64' => 0,
+            '> 64' => 0,
             'Inconnu' => 0,
             'total' => 0
         );
@@ -59,23 +59,23 @@ class ChartProspectsByAge extends AdminController
                 case ($prospect['age'] < 18):
                     $repartitionProspectsHeaders['< 18']++;
                     break;
-                case ($prospect['age'] >= 18 && $prospect['age'] < 25):
+                case ($prospect['age'] >= 18 && $prospect['age'] <= 24):
                     $repartitionProspectsHeaders['18-24']++;
                     break;
-                case ($prospect['age'] >= 25 && $prospect['age'] < 34):
+                case ($prospect['age'] >= 25 && $prospect['age'] <= 34):
                     $repartitionProspectsHeaders['25-34']++;
                     break;
-                case ($prospect['age'] >= 35 && $prospect['age'] < 44):
+                case ($prospect['age'] >= 35 && $prospect['age'] <= 44):
                     $repartitionProspectsHeaders['35-44']++;
                     break;
-                case ($prospect['age'] >= 45 && $prospect['age'] < 54):
+                case ($prospect['age'] >= 45 && $prospect['age'] <= 54):
                     $repartitionProspectsHeaders['45-54']++;
                     break;
-                case ($prospect['age'] >= 55 && $prospect['age'] < 64):
-                    $repartitionProspectsHeaders['55-65']++;
+                case ($prospect['age'] >= 55 && $prospect['age'] <= 64):
+                    $repartitionProspectsHeaders['55-64']++;
                     break;
-                case ($prospect['age'] > 65):
-                    $repartitionProspectsHeaders['> 65']++;
+                case ($prospect['age'] >= 65):
+                    $repartitionProspectsHeaders['> 64']++;
                     break;
                 default:
                     $repartitionProspectsHeaders['Inconnu']++;
@@ -96,7 +96,7 @@ class ChartProspectsByAge extends AdminController
         $tracers = TracerClass::getAllTracer();
         $results = array();
         foreach ($tracers as $tracer) {
-            $prospects = $p->getProspectsByDate($dateEmployee, $tracer);
+            $prospects = $p->getProspectsByTracer($dateEmployee, $tracer);
             $results[$tracer] = $this->getRepartitionProspects($prospects);
         }
 
@@ -106,8 +106,8 @@ class ChartProspectsByAge extends AdminController
             '25-34',
             '35-44',
             '45-54',
-            '55-65',
-            '> 65',
+            '55-64',
+            '> 64',
             'Inconnu',
             'total'
         );

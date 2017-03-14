@@ -13,69 +13,105 @@ class ChartCustomersByAge extends AdminController
     }
 
 
-    public function displayChartAgeCustomers($getDateBetweenFromEmployee, CustomerTrackingClass $customers)
+    public function displayChartAgeCustomers($getDateBetweenFromEmployee, CustomerTrackingClass $c)
     {
-        $customers = $customers->getCustomersByDate($getDateBetweenFromEmployee);
-        $repartitionCustomersHeaders = array(
-            '< 18',
-            '18-24',
-            '25-34',
-            '35-44',
-            '45-54',
-            '55-65',
-            '> 65',
-            'Inconnu'
-        );
+        $tracers = TracerClass::getAllTracer();
+        $results = array();
+        foreach ($tracers as $tracer) {
+            $customers = $c->getCustomersByTracer($getDateBetweenFromEmployee, $tracer);
+            $results[$tracer] = $this->getRepartitionCustomers($customers, $tracer);
+        }
+        $tableAgeCustomersValuesTotal = array_reduce($results, function ($a, $b) {
+           $a += isset($b['total']) ?  $b['total'] : 0 ;
+            return $a;
+        });
 
-        $repartitionCustomersValues = array(
-            0 => 0,
-            1 => 0,
-            2 => 0,
-            3 => 0,
-            4 => 0,
-            5 => 0,
-            6 => 0,
-            7 => 0
+        $this->smarty->assign(array(
+            'tableAgeCustomersValues' => $results,
+            'tableAgeCustomersValuesTotal' => $tableAgeCustomersValuesTotal,
+        ));
+
+        return $this->smarty->fetch($this->path_tpl . "chartCustomersByAge.tpl");
+    }
+
+    /**
+     * @param CustomerTrackingClass $customers
+     * @param $tracer
+     * @return array
+     */
+    public function getRepartitionCustomers($customers, $tracer)
+    {
+        $repartitionCustomersHeaders = array(
+            '< 18' => 0,
+            '18-24' => 0,
+            '25-34' => 0,
+            '35-44' => 0,
+            '45-54' => 0,
+            '55-64' => 0,
+            '> 64' => 0,
+            'Inconnu' => 0,
+            'total' => 0
         );
 
         foreach ($customers as $customer) {
             switch ($customer['age']) {
                 case ($customer['age'] < 18):
-                    $repartitionCustomersValues[0]++;
+                    $repartitionCustomersHeaders['< 18']++;
                     break;
-                case ($customer['age'] >= 18 && $customer['age'] < 25):
-                    $repartitionCustomersValues[1]++;
+                case ($customer['age'] >= 18 && $customer['age'] <= 24):
+                    $repartitionCustomersHeaders['18-24']++;
                     break;
-                case ($customer['age'] >= 25 && $customer['age'] < 34):
-                    $repartitionCustomersValues[2]++;
+                case ($customer['age'] >= 25 && $customer['age'] <= 34):
+                    $repartitionCustomersHeaders['25-34']++;
                     break;
-                case ($customer['age'] >= 35 && $customer['age'] < 44):
-                    $repartitionCustomersValues[3]++;
+                case ($customer['age'] >= 35 && $customer['age'] <= 44):
+                    $repartitionCustomersHeaders['35-44']++;
                     break;
-                case ($customer['age'] >= 45 && $customer['age'] < 54):
-                    $repartitionCustomersValues[4]++;
+                case ($customer['age'] >= 45 && $customer['age'] <= 54):
+                    $repartitionCustomersHeaders['45-54']++;
                     break;
-                case ($customer['age'] >= 55 && $customer['age'] < 64):
-                    $repartitionCustomersValues[5]++;
+                case ($customer['age'] >= 55 && $customer['age'] <= 64):
+                    $repartitionCustomersHeaders['55-64']++;
                     break;
-                case ($customer['age'] > 65):
-                    $repartitionCustomersValues[6]++;
+                case ($customer['age'] >= 65):
+                    $repartitionCustomersHeaders['> 64']++;
                     break;
                 default:
-                    $repartitionCustomersValues[7]++;
+                    $repartitionCustomersHeaders['Inconnu']++;
             }
         }
 
-        $tableAgeCustomersValuesTotal = array_sum($repartitionCustomersValues);
+        $sum = 0;
+        foreach ($repartitionCustomersHeaders as $key => $value) {
+            $sum += $value;
+        }
+        $repartitionCustomersHeaders['total'] = $sum;
 
-        $this->smarty->assign(array(
-            'tableAgeCustomersHeaders' => $repartitionCustomersHeaders,
-            'tableAgeCustomersValues' => $repartitionCustomersValues,
-            'tableAgeCustomersValuesTotal' => $tableAgeCustomersValuesTotal,
-            'chartAgeCustomersHeaders' => json_encode($repartitionCustomersHeaders),
-            'chartAgeCustomersValues' => json_encode($repartitionCustomersValues),
-        ));
+        return $repartitionCustomersHeaders;
+    }
 
-        return $this->smarty->fetch($this->path_tpl . "chartCustomersByAge.tpl");
+    public function exportCsv(CustomerTrackingClass $c, $dateEmployee)
+    {
+        $tracers = TracerClass::getAllTracer();
+        $results = array();
+        foreach ($tracers as $tracer) {
+            $customers = $c->getCustomersByTracer($dateEmployee, $tracer);
+            $results[$tracer] = $this->getRepartitionCustomers($customers, $tracer);
+        }
+
+        $titles = array(
+            '< 18',
+            '18-24',
+            '25-34',
+            '35-44',
+            '45-54',
+            '55-64',
+            '> 64',
+            'Inconnu',
+            'total'
+        );
+
+        $csv = new ExportCsvClass();
+        $csv->exportCsv($titles, $results, "clientsParAge", "Tracer");
     }
 }
