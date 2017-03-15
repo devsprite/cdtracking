@@ -18,17 +18,38 @@ class ChartProspectsByEmployees extends AdminController
 
     public function displayChartProspectsByEmployees($dateRange)
     {
-        $employees = EmployeesClass::getEmployees();
+        $employees = array();
+        $employeesTotal = EmployeesClass::getEmployees();
+        $customerTracking = new CustomerTrackingClass();
+        foreach ($employeesTotal as $employee) {
+            $count = $customerTracking->getCustomersByEmployee($employee['id_employee'], $dateRange);
+            if ($count > 0) {
+                $employees[] = $employee;
+            }
+        }
+
         $tracers = TracerClass::getAllTracer();
-        foreach ($employees as $key => $employe) {
-            $employees[$key]['tracersByGroups'] = TracerClass::getArrayTracersByEmployees($employe['id_employee'], $dateRange);
-            $employees[$key]['TotalCountTracersByGroups'] = TracerClass::getTotalCountTracersByEmployees($employe['id_employee'], $dateRange);
+        $results = array();
+        foreach ($tracers as $tracer) {
+            $repartitionTracer = TracerClass::getNbrProspectsByTracer($tracer, $dateRange);
+            foreach ($employees as $key => $employe) {
+                $results[$tracer][$employe['id_employee']] = $employe;
+                $results[$tracer][$employe['id_employee']]['nbrProspects'] =
+                    TracerClass::getProspectsByEmployeeAndTracer($employe['id_employee'], $tracer, $dateRange);
+                $results[$tracer][$employe['id_employee']]['repartition'] =
+                    round((($results[$tracer][$employe['id_employee']]['nbrProspects']*100)/$repartitionTracer),2);
+                $results[$tracer][$employe['id_employee']]['nbrVentes'] = $this->getNbrVentes($employe['id_employee'], $tracer, $dateRange);
+                $results[$tracer][$employe['id_employee']]['tauxTransfo'] = round(
+                    ($results[$tracer][$employe['id_employee']]['nbrVentes']/$results[$tracer][$employe['id_employee']]['nbrProspects'])
+                ,2);
+            }
         }
 
         $this->smarty->assign(array(
             'tracers' => $tracers,
             'employees' => $employees,
-            'LinkFile' => Tools::safeOutput($_SERVER['REQUEST_URI'])
+            'results' => $results,
+            'linkFile' => Tools::safeOutput($_SERVER['REQUEST_URI'])
         ));
 
         return $this->smarty->fetch($this->path_tpl . "chartProspectsByEmployees.tpl");
@@ -36,26 +57,40 @@ class ChartProspectsByEmployees extends AdminController
 
     public function exportCsv($dateRange)
     {
-        $employees = EmployeesClass::getEmployees();
-        $tracers = TracerClass::getAllTracer();
-        array_unshift($tracers, 'firstname');
-        array_unshift($tracers, 'lastname');
-        $tracersFill = array_fill_keys($tracers, "");
-        $tracers[] = "total";
-        foreach ($employees as $key => $employe) {
-            $employees[$key]['tracersByGroups'] = TracerClass::getArrayTracersByEmployees($employe['id_employee'], $dateRange);
-            $employees[$key]['TotalCountTracersByGroups'] = TracerClass::getTotalCountTracersByEmployees($employe['id_employee'], $dateRange);
+        $employees = array();
+        $employeesTotal = EmployeesClass::getEmployees();
+        $customerTracking = new CustomerTrackingClass();
+        foreach ($employeesTotal as $employee) {
+            $count = $customerTracking->getCustomersByEmployee($employee['id_employee'], $dateRange);
+            if ($count > 0) {
+                $employees[] = $employee;
+            }
         }
-        $arrayEmployees = array();
-        foreach ($employees as $employee) {
-            $arrayTracers = array_replace($tracersFill, $employee['tracersByGroups']);
-            $arrayTracers['lastname'] = $employee['lastname'];
-            $arrayTracers['firstname'] = $employee['firstname'];
-            $arrayTracers['total'] = ($employee['TotalCountTracersByGroups']) ? $employee['TotalCountTracersByGroups'] : "";
-            $arrayEmployees[$employee['id_employee']] = $arrayTracers;
+
+        $tracers = TracerClass::getAllTracer();
+        $results = array();
+        foreach ($tracers as $tracer) {
+            $repartitionTracer = TracerClass::getNbrProspectsByTracer($tracer, $dateRange);
+            foreach ($employees as $key => $employe) {
+                $results[$tracer][$employe['id_employee']] = $employe;
+                $results[$tracer][$employe['id_employee']]['nbrProspects'] =
+                    TracerClass::getProspectsByEmployeeAndTracer($employe['id_employee'], $tracer, $dateRange);
+                $results[$tracer][$employe['id_employee']]['repartition'] =
+                    round((($results[$tracer][$employe['id_employee']]['nbrProspects']*100)/$repartitionTracer),2);
+                $results[$tracer][$employe['id_employee']]['nbrVentes'] = $this->getNbrVentes($employe['id_employee'], $tracer, $dateRange);
+                $results[$tracer][$employe['id_employee']]['tauxTransfo'] = round(
+                    ($results[$tracer][$employe['id_employee']]['nbrVentes']/$results[$tracer][$employe['id_employee']]['nbrProspects'])
+                    ,2);
+            }
         }
 
         $csv = new ExportCsvClass();
-        $csv->csvExportProspectsByEmployees($tracers, $arrayEmployees, "prospectsParEmployes");
+        $csv->csvExportProspectsByEmployees($employees, $results, "prospectsParEmployes");
+    }
+
+    private function getNbrVentes($id_employee, $tracer, $dateRange)
+    {
+        $customer = new CustomerTrackingClass();
+        return $customer->getCustomersByEmployeeAndTracer($id_employee, $tracer, $dateRange);
     }
 }

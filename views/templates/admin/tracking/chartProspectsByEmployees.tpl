@@ -5,30 +5,38 @@
         </div>
         <div class="panel-body">
             <div>
-                <a class="btn btn-primary" href="{$LinkFile}&export_csv=2">CSV</a>
+                <a class="btn btn-primary" href="{$linkFile}&export_csv=2">CSV</a>
             </div>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th class="col-xs-2"><strong>Employés</strong></th>
-                    {foreach item=tracer key=key from=$tracers}
-                    <th class="col-xs-1">{$tracer}</th>
+                    <th></th>
+                    {foreach item=item from=$employees}
+                    <th class="text-center" colspan="4">{$item['lastname']}</th>
                     {/foreach}
-                    <th>Total</th>
+                </tr>
+                <tr>
+                    <th>Tracer</th>
+                    {foreach item=item from=$employees}
+                    <th class="text-center">Nbr Pros.</th>
+                    <th class="text-center">Rép.</th>
+                    <th class="text-center">Nbr. Vent.</th>
+                    <th class="text-center">Taux</th>
+                    {/foreach}
                 </tr>
                 </thead>
                 <tbody>
-                {foreach item=employe key=key from=$employees}
-                {if !empty($employe['tracersByGroups'])}
-                <tr>
-                    <td>{$employe['firstname']} {$employe['lastname']}</td>
-                    {foreach item=tracer key=key from=$tracers}
-                    <td>{$employe['tracersByGroups'][$tracer]}</td>
+                    {foreach item=item key=key from=$results}
+                    <tr>
+                        <td>{$key}</td>
+                        {foreach item=value from=$item}
+                        <td class="text-center">{if $value['nbrProspects'] != 0}{$value['nbrProspects']}{/if}</td>
+                        <td class="text-center">{if $value['nbrProspects'] != 0}{$value['repartition']}{/if}</td>
+                        <td class="text-center">{if $value['nbrVentes'] != 0}{$value['nbrVentes']}{/if}</td>
+                        <td class="text-center">{if $value['nbrVentes'] != 0}{$value['tauxTransfo']}{/if}</td>
+                        {/foreach}
+                    </tr>
                     {/foreach}
-                    <td><strong>{$employe['TotalCountTracersByGroups']}</strong></td>
-                </tr>
-                {/if}
-                {/foreach}
                 </tbody>
             </table>
         </div>

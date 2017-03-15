@@ -1,6 +1,7 @@
 <div class="panel">
     <div id="chartGroupProspects" class="panel-heading">
         <h4><i class="icon-chevron-right" title="chartGroupProspects"></i> Prospects par groupes et tracers</h4>
+        <p>Attention : un prospect peux appartenir à plusieurs groupes en même temps</p>
     </div>
     <div class="panel-body">
         <div>

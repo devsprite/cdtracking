@@ -71,6 +71,46 @@ class CustomerTrackingClass
         return $this->trimArray($query);
     }
 
+    public function getCustomersByEmployeeAndTracer($id_employee, $tracer, $dateBetween)
+    {
+        $sql = 'SELECT 
+                IF((SELECT so.`id_order` FROM `' . _DB_PREFIX_ . 'orders` so 
+                WHERE so.`id_customer` = o.`id_customer` 
+                AND so.`id_order` < o.`id_order` LIMIT 1) > 0, 0, 1) as new
+				FROM `' . _DB_PREFIX_ . 'orders` AS o, `' . _DB_PREFIX_ . 'customer` AS c
+				WHERE `valid` = 1
+				AND o.`id_customer` = c.`id_customer`
+				AND o.`id_employee` = ' . (int)$id_employee . '
+				AND c.`tracer` = "' . $tracer . '"
+				AND o.`date_add` BETWEEN "' . $dateBetween['debut'] . '"
+				AND "' . $dateBetween['fin'] . '"
+				AND `id_code_action` = 2
+				';
+        $query = Db::getInstance()->executeS($sql);
+
+        return count($query);
+    }
+
+    public function getCustomersByEmployee($id_employee, $dateBetween)
+    {
+        $sql = 'SELECT 
+                IF((SELECT so.`id_order` FROM `' . _DB_PREFIX_ . 'orders` so 
+                WHERE so.`id_customer` = o.`id_customer` 
+                AND so.`id_order` < o.`id_order` LIMIT 1) > 0, 0, 1) as new
+				FROM `' . _DB_PREFIX_ . 'orders` AS o, `' . _DB_PREFIX_ . 'customer` AS c
+				WHERE `valid` = 1
+				AND o.`id_customer` = c.`id_customer`
+				AND o.`id_employee` = ' . (int)$id_employee . '
+				AND c.`tracer` != ""
+				AND o.`date_add` BETWEEN "' . $dateBetween['debut'] . '"
+				AND "' . $dateBetween['fin'] . '"
+				AND `id_code_action` = 2
+				';
+        $query = Db::getInstance()->executeS($sql);
+
+        return count($query);
+    }
+
     public function getCustomersByDate($countTrackingBetweenDate)
     {
         $sql = 'SELECT ROUND(o.`total_products` - o.`total_discounts_tax_excl`,2) AS total,

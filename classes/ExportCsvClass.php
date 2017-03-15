@@ -30,20 +30,27 @@ class ExportCsvClass extends AdminController
         $this->_displayCsv($nameFile);
     }
 
-    public function csvExportProspectsByEmployees($tracers, $datas, $nameFile)
+    public function csvExportProspectsByEmployees($employees, $datas, $nameFile)
     {
         $this->_csv = chr(239) . chr(187) . chr(191);
-        if (count($tracers)) {
-            $this->_csv .= "Id;";
-            foreach ($tracers as $column => $value) {
-                $this->_csv .= $value . ';';
+        if (count($employees)) {
+            $this->_csv .= "Tracer;";
+            foreach ($employees as $column) {
+                $this->_csv .= $column['lastname'] . ';;;;';
+            }
+            $this->_csv = rtrim($this->_csv, ';') . "\n;";
+            foreach ($employees as $column) {
+                $this->_csv .= 'Nbr prospects;Répartition;Nbr ventes;taux;';
             }
             $this->_csv = rtrim($this->_csv, ';') . "\n";
 
             foreach ($datas as $group => $values) {
                 $this->_csv .= $group . ';';
                 foreach ($values as $column) {
-                    $this->_csv .= $column . ';';
+                    $this->_csv .= ($column['nbrProspects']) ? $column['nbrProspects'] . ";" : "" . ";";
+                    $this->_csv .= ($column['repartition']) ? $column['repartition'] . ";" : ";";
+                    $this->_csv .= ($column['nbrVentes']) ? $column['nbrVentes'] . ";" : ";";
+                    $this->_csv .= ($column['tauxTransfo']) ? $column['tauxTransfo'] . ";" : ";";
                 }
                 $this->_csv = rtrim(str_replace('.', ',', $this->_csv), ';') . "\n";
             }
