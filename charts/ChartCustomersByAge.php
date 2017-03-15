@@ -19,16 +19,30 @@ class ChartCustomersByAge extends AdminController
         $results = array();
         foreach ($tracers as $tracer) {
             $customers = $c->getCustomersByTracer($getDateBetweenFromEmployee, $tracer);
-            $results[$tracer] = $this->getRepartitionCustomers($customers, $tracer);
+            $prospects = $c->getProspectsByTracer($getDateBetweenFromEmployee, $tracer);
+
+            $totalProspects = $this->getRepartitionCustomers($prospects, $tracer);
+            $totalCustomers = $this->getRepartitionCustomers($customers, $tracer);
+            foreach ($totalCustomers as $key => $value) {
+                $results[$tracer][$key] = array(
+                    'orders' => $value,
+                    'prospects' => $totalProspects[$key]
+                );
+            }
+
         }
+
         $tableAgeCustomersValuesTotal = array_reduce($results, function ($a, $b) {
-           $a += isset($b['total']) ?  $b['total'] : 0 ;
+            $a += array_reduce($b, function($c, $d) {
+               $c += isset($d['orders']) ?  $d['orders'] : 0 ;
+               return $c;
+           });
             return $a;
         });
 
         $this->smarty->assign(array(
             'tableAgeCustomersValues' => $results,
-            'tableAgeCustomersValuesTotal' => $tableAgeCustomersValuesTotal,
+            'tableAgeCustomersValuesTotal' => $tableAgeCustomersValuesTotal / 2,
         ));
 
         return $this->smarty->fetch($this->path_tpl . "chartCustomersByAge.tpl");

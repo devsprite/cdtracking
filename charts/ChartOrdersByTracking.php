@@ -68,21 +68,21 @@ class ChartOrdersByTracking extends AdminController
         return $arrayTracking;
     }
 
-    public function exportCsv(CustomerTrackingClass $prospect, $countTrackingBetweenDate)
+    public function exportCsv(CustomerTrackingClass $prospect, $dateRange)
     {
-        $prospects = $prospect->getCustomersByDate($countTrackingBetweenDate);
+        $prospects = $prospect->getCustomersByDate($dateRange);
         $arrayNumberTracking = $this->readNumberTracking($prospects);
         $arrayTrackingProspects = $this->trackingProspects($prospects, $arrayNumberTracking);
-        $totalTrackingProspects = array_sum($arrayTrackingProspects);
-
         $trackingProspects = array();
+        $totalByTracer = $this->totalByTracer($prospect, $dateRange);
+
         foreach ($arrayTrackingProspects as $key => $value) {
             $p['tracer'] = $key;
             $p['nombre'] = $value;
-//            $p['taux'] = round((($value*100)/$totalTrackingProspects),2);
-            $p['taux'] = round((($value/$totalTrackingProspects)*100),2);
+            $p['taux'] = round((($value/$totalByTracer[$key])*100),2);
             $trackingProspects[] = $p;
         }
+
         $titles = array(
             'Tracer', 'Nombre de vente', 'Taux de transformation'
         );
