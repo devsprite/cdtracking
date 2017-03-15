@@ -12,20 +12,21 @@ class ChartOrdersByTracking extends AdminController
         $this->path_tpl = _PS_MODULE_DIR_ . 'cdtracking/views/templates/admin/tracking/';
     }
 
-    public function displayChartOrdersByTracking($countTrackingBetweenDate, CustomerTrackingClass $prospect)
+    public function displayChartOrdersByTracking($dateRange, CustomerTrackingClass $prospect)
     {
-        $prospects = $prospect->getCustomersByDate($countTrackingBetweenDate);
+        $prospects = $prospect->getCustomersByDate($dateRange);
         $arrayNumberTracking = $this->readNumberTracking($prospects);
         $arrayTrackingProspects = $this->trackingProspects($prospects, $arrayNumberTracking);
         $totalTrackingProspects = array_sum($arrayTrackingProspects);
         $arrayTrackingProspectsValues = array();
         $arrayTrackingProspectsHeader = array();
         $trackingProspects = array();
+        $totalByTracer = $this->totalByTracer($prospect, $dateRange);
+
         foreach ($arrayTrackingProspects as $key => $value) {
             $p['tracer'] = $key;
             $p['nombre'] = $value;
-//            $p['taux'] = round((($value*100)/$totalTrackingProspects),2);
-            $p['taux'] = round((($value/$totalTrackingProspects)*100),2);
+            $p['taux'] = round((($value/$totalByTracer[$key])*100),2);
             $trackingProspects[] = $p;
 
             $arrayTrackingProspectsHeader[] = $key;
@@ -87,5 +88,16 @@ class ChartOrdersByTracking extends AdminController
         );
         $csv = new ExportCsvClass();
         $csv->exportCsv($titles, $trackingProspects, 'Nombre de vente');
+    }
+
+    private function totalByTracer(CustomerTrackingClass $prospect, $dateRange)
+    {
+        $req = $countTrackingBetweenDate = $prospect->countTrackingBetweenDate($dateRange);
+        $results = array();
+        foreach ($req as $key => $value) {
+            $results[$value['tracer']] = $value['total'];
+        }
+
+        return $results;
     }
 }
