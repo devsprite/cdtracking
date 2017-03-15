@@ -24,7 +24,8 @@ class ChartOrdersByTracking extends AdminController
         foreach ($arrayTrackingProspects as $key => $value) {
             $p['tracer'] = $key;
             $p['nombre'] = $value;
-            $p['repartition'] = round((($value*100)/$totalTrackingProspects),2);
+//            $p['taux'] = round((($value*100)/$totalTrackingProspects),2);
+            $p['taux'] = round((($value/$totalTrackingProspects)*100),2);
             $trackingProspects[] = $p;
 
             $arrayTrackingProspectsHeader[] = $key;
@@ -77,7 +78,8 @@ class ChartOrdersByTracking extends AdminController
         foreach ($arrayTrackingProspects as $key => $value) {
             $p['tracer'] = $key;
             $p['nombre'] = $value;
-            $p['repartition'] = round((($value*100)/$totalTrackingProspects),2);
+//            $p['taux'] = round((($value*100)/$totalTrackingProspects),2);
+            $p['taux'] = round((($value/$totalTrackingProspects)*100),2);
             $trackingProspects[] = $p;
         }
         $titles = array(

@@ -51,7 +51,7 @@
                     <td>{$key}</td>
                     {foreach item=value from=$item}
                     <td class="text-center">{if $value != 0}{$value}{/if}</td>
-                    <td class="text-center">{if $value != 0}{(($value*100)/$tableAgeProspectsValuesTotal)|string_format:"%.2f"} %{/if}</td>
+                    <td class="text-center">{if $value != 0}{(($value/$item['total'])*100)|string_format:"%.1f"} %{/if}</td>
                     {/foreach}
                 </tr>
                 {/foreach}

@@ -38,6 +38,15 @@
                     </tr>
                     {/foreach}
                 </tbody>
+                <tfoot>
+                <tr>
+                    <th>Total</th>
+                    {foreach item=item from=$employees}
+                    <td class="text-center">{$item['totalProspects']}</td>
+                    <td colspan="3"></td>
+                    {/foreach}
+                </tr>
+                </tfoot>
             </table>
         </div>
     </div>

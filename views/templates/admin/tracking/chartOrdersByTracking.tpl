@@ -24,7 +24,7 @@
             <tr>
                 <td class="">{$item['tracer']}</td>
                 <td class="text-center">{$item['nombre']}</td>
-                <td class="text-right">{$item['repartition']} %</td>
+                <td class="text-right">{$item['taux']} %</td>
             </tr>
             {/foreach}
             <tr>

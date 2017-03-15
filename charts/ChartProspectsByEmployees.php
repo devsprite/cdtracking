@@ -31,13 +31,14 @@ class ChartProspectsByEmployees extends AdminController
         $tracers = TracerClass::getAllTracer();
         $results = array();
         foreach ($tracers as $tracer) {
-            $repartitionTracer = TracerClass::getNbrProspectsByTracer($tracer, $dateRange);
             foreach ($employees as $key => $employe) {
+                $employees[$key]['totalProspects'] =
+                    $this->getTotalProspectsByTracerAndEmployee($employe['id_employee'], $dateRange);
                 $results[$tracer][$employe['id_employee']] = $employe;
                 $results[$tracer][$employe['id_employee']]['nbrProspects'] =
                     TracerClass::getProspectsByEmployeeAndTracer($employe['id_employee'], $tracer, $dateRange);
                 $results[$tracer][$employe['id_employee']]['repartition'] =
-                    round((($results[$tracer][$employe['id_employee']]['nbrProspects']*100)/$repartitionTracer),2);
+                    round((($results[$tracer][$employe['id_employee']]['nbrProspects'] / $employees[$key]['totalProspects'])*100),2);
                 $results[$tracer][$employe['id_employee']]['nbrVentes'] = $this->getNbrVentes($employe['id_employee'], $tracer, $dateRange);
                 $results[$tracer][$employe['id_employee']]['tauxTransfo'] = round(
                     ($results[$tracer][$employe['id_employee']]['nbrVentes']/$results[$tracer][$employe['id_employee']]['nbrProspects'])
@@ -70,13 +71,14 @@ class ChartProspectsByEmployees extends AdminController
         $tracers = TracerClass::getAllTracer();
         $results = array();
         foreach ($tracers as $tracer) {
-            $repartitionTracer = TracerClass::getNbrProspectsByTracer($tracer, $dateRange);
             foreach ($employees as $key => $employe) {
+                $employees[$key]['totalProspects'] =
+                    $this->getTotalProspectsByTracerAndEmployee($employe['id_employee'], $dateRange);
                 $results[$tracer][$employe['id_employee']] = $employe;
                 $results[$tracer][$employe['id_employee']]['nbrProspects'] =
                     TracerClass::getProspectsByEmployeeAndTracer($employe['id_employee'], $tracer, $dateRange);
                 $results[$tracer][$employe['id_employee']]['repartition'] =
-                    round((($results[$tracer][$employe['id_employee']]['nbrProspects']*100)/$repartitionTracer),2);
+                    round((($results[$tracer][$employe['id_employee']]['nbrProspects'] / $employees[$key]['totalProspects'])*100),2);
                 $results[$tracer][$employe['id_employee']]['nbrVentes'] = $this->getNbrVentes($employe['id_employee'], $tracer, $dateRange);
                 $results[$tracer][$employe['id_employee']]['tauxTransfo'] = round(
                     ($results[$tracer][$employe['id_employee']]['nbrVentes']/$results[$tracer][$employe['id_employee']]['nbrProspects'])
@@ -92,5 +94,10 @@ class ChartProspectsByEmployees extends AdminController
     {
         $customer = new CustomerTrackingClass();
         return $customer->getCustomersByEmployeeAndTracer($id_employee, $tracer, $dateRange);
+    }
+
+    private function getTotalProspectsByTracerAndEmployee($id_employee, $dateRange)
+    {
+        return TracerClass::getTotalCountTracersByEmployees($id_employee, $dateRange);
     }
 }
