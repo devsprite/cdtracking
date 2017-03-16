@@ -41,7 +41,7 @@ class ChartProspectsByEmployees extends AdminController
                     round((($results[$tracer][$employe['id_employee']]['nbrProspects'] / $employees[$key]['totalProspects'])*100),2);
                 $results[$tracer][$employe['id_employee']]['nbrVentes'] = $this->getNbrVentes($employe['id_employee'], $tracer, $dateRange);
                 $results[$tracer][$employe['id_employee']]['tauxTransfo'] = round(
-                    ($results[$tracer][$employe['id_employee']]['nbrVentes']/$results[$tracer][$employe['id_employee']]['nbrProspects'])
+                    (($results[$tracer][$employe['id_employee']]['nbrVentes']/$results[$tracer][$employe['id_employee']]['nbrProspects'])*100)
                 ,2);
             }
         }
@@ -81,7 +81,7 @@ class ChartProspectsByEmployees extends AdminController
                     round((($results[$tracer][$employe['id_employee']]['nbrProspects'] / $employees[$key]['totalProspects'])*100),2);
                 $results[$tracer][$employe['id_employee']]['nbrVentes'] = $this->getNbrVentes($employe['id_employee'], $tracer, $dateRange);
                 $results[$tracer][$employe['id_employee']]['tauxTransfo'] = round(
-                    ($results[$tracer][$employe['id_employee']]['nbrVentes']/$results[$tracer][$employe['id_employee']]['nbrProspects'])
+                    (($results[$tracer][$employe['id_employee']]['nbrVentes']/$results[$tracer][$employe['id_employee']]['nbrProspects'])*100)
                     ,2);
             }
         }

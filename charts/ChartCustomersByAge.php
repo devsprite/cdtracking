@@ -110,7 +110,16 @@ class ChartCustomersByAge extends AdminController
         $results = array();
         foreach ($tracers as $tracer) {
             $customers = $c->getCustomersByTracer($dateEmployee, $tracer);
-            $results[$tracer] = $this->getRepartitionCustomers($customers, $tracer);
+            $prospects = $c->getProspectsByTracer($dateEmployee, $tracer);
+
+            $totalProspects = $this->getRepartitionCustomers($prospects, $tracer);
+            $totalCustomers = $this->getRepartitionCustomers($customers, $tracer);
+            foreach ($totalCustomers as $key => $value) {
+                $results[$tracer][$key] = array(
+                    'orders' => $value,
+                    'prospects' => $totalProspects[$key]
+                );
+            }
         }
 
         $titles = array(
@@ -126,6 +135,6 @@ class ChartCustomersByAge extends AdminController
         );
 
         $csv = new ExportCsvClass();
-        $csv->exportCsv($titles, $results, "clientsParAge", "Tracer");
+        $csv->exportCsvCustomers($titles, $results, "clientsParAge", "Tracer");
     }
 }

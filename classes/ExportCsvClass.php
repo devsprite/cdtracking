@@ -15,14 +15,15 @@ class ExportCsvClass extends AdminController
         if (count($tracers)) {
             $this->_csv .= "Groupes;";
             foreach ($tracers as $column => $value) {
-                $this->_csv .= $column . ';';
+                $this->_csv .= $column . ';;';
             }
             $this->_csv = rtrim($this->_csv, ';') . "\n";
 
             foreach ($datas as $group => $values) {
                 $this->_csv .= $group . ';';
                 foreach ($values as $column) {
-                    $this->_csv .= $column[1] . ';';
+                    $this->_csv .= ($column[1] != 0) ? $column[1] . ';' : ";";
+                    $this->_csv .= ($column[2] != 0) ? $column[2] . ';' : ";";
                 }
                 $this->_csv = rtrim(str_replace('.', ',', $this->_csv), ';') . "\n";
             }
@@ -58,6 +59,58 @@ class ExportCsvClass extends AdminController
         $this->_displayCsv($nameFile);
     }
 
+    public function exportCsvCustomers($titles, $datas, $nameFile, $titleRow = false)
+    {
+        $this->_csv = chr(239) . chr(187) . chr(191);
+        if (count($titles)) {
+            if ($titleRow) {
+                $this->_csv .= $titleRow . ";";
+            }
+            foreach ($titles as $column) {
+                $this->_csv .= $column . ';;';
+            }
+            $this->_csv = rtrim($this->_csv, ';') . "\n";
+
+            foreach ($datas as $group => $values) {
+                if ($titleRow) {
+                    $this->_csv .= $group . ";";
+                }
+                foreach ($values as $column) {
+                    $this->_csv .= ($column['orders']) ? $column['orders'] . ';' : ";";
+                    $this->_csv .= ($column['prospects']) ? round(($column['orders'] / $column['prospects']) * 100, 2) . ';' : ";";
+                }
+                $this->_csv = rtrim(str_replace('.', ',', $this->_csv), ';') . "\n";
+            }
+        }
+        $this->_displayCsv($nameFile);
+    }
+
+    public function exportCsvProspects($titles, $datas, $nameFile, $titleRow = false)
+    {
+        $this->_csv = chr(239) . chr(187) . chr(191);
+        if (count($titles)) {
+            if ($titleRow) {
+                $this->_csv .= $titleRow . ";";
+            }
+            foreach ($titles as $column) {
+                $this->_csv .= $column . ';;';
+            }
+            $this->_csv = rtrim($this->_csv, ';') . "\n";
+
+            foreach ($datas as $group => $values) {
+                if ($titleRow) {
+                    $this->_csv .= $group . ";";
+                }
+                foreach ($values as $column) {
+                    $this->_csv .= ($column) ? $column . ';' : ";";
+                    $this->_csv .= ($column) ? round(($column / $values['total']) * 100, 2) . ';' : ";";
+                }
+                $this->_csv = rtrim(str_replace('.', ',', $this->_csv), ';') . "\n";
+            }
+        }
+        $this->_displayCsv($nameFile);
+    }
+
     /**
      * @param $titles
      * array (size=3)
@@ -84,22 +137,16 @@ class ExportCsvClass extends AdminController
      *              'repartition' => float 13.43
      * @param $nameFile
      */
-    public function exportCsv($titles, $datas, $nameFile, $titleRow = false)
+    public function exportCsv($titles, $datas, $nameFile)
     {
         $this->_csv = chr(239) . chr(187) . chr(191);
         if (count($titles)) {
-            if ($titleRow) {
-                $this->_csv .= $titleRow . ";";
-            }
             foreach ($titles as $column) {
                 $this->_csv .= $column . ';';
             }
             $this->_csv = rtrim($this->_csv, ';') . "\n";
 
             foreach ($datas as $group => $values) {
-                if ($titleRow) {
-                    $this->_csv .= $group . ";";
-                }
                 foreach ($values as $column) {
                     $this->_csv .= $column . ';';
                 }

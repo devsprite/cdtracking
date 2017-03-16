@@ -114,6 +114,6 @@ class ChartProspectsByAge extends AdminController
 
         $csv = new ExportCsvClass();
 
-        $csv->exportCsv($titles, $results, "prospectsParAge", "Tracer");
+        $csv->exportCsvProspects($titles, $results, "prospectsParAge", "Tracer");
     }
 }
