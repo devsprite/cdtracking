@@ -25,3 +25,8 @@
 .canvasChart {
     display: none;
 }
+
+.adapteWidth {
+    white-space: pre;
+    width: 70%;
+}

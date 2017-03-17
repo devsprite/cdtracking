@@ -18,10 +18,10 @@
                 <tr>
                     <th>Tracer</th>
                     {foreach item=item from=$employees}
-                    <th class="text-center">Nbr Pros.</th>
-                    <th class="text-center">Rép.</th>
-                    <th class="text-center">Nbr. Vent.</th>
-                    <th class="text-center">Taux</th>
+                    <th class="text-center adapteWidth">Nbr Pros.</th>
+                    <th class="text-right adapteWidth">      Rép.</th>
+                    <th class="text-center adapteWidth">Nbr. Vent.</th>
+                    <th class="text-right adapteWidth">      Taux</th>
                     {/foreach}
                 </tr>
                 </thead>
@@ -31,9 +31,9 @@
                         <td>{$key}</td>
                         {foreach item=value from=$item}
                         <td class="text-center">{if $value['nbrProspects'] != 0}{$value['nbrProspects']}{/if}</td>
-                        <td class="text-center">{if $value['nbrProspects'] != 0}{$value['repartition']}{/if}</td>
+                        <td class="text-right">{if $value['nbrProspects'] != 0}{$value['repartition']} %{/if}</td>
                         <td class="text-center">{if $value['nbrVentes'] != 0}{$value['nbrVentes']}{/if}</td>
-                        <td class="text-center">{if $value['nbrVentes'] != 0}{$value['tauxTransfo']}{/if}</td>
+                        <td class="text-right">{if $value['nbrVentes'] != 0}{$value['tauxTransfo']} %{/if}</td>
                         {/foreach}
                     </tr>
                     {/foreach}
