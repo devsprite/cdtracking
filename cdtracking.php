@@ -38,7 +38,7 @@ class Cdtracking extends Module
         $this->name = 'cdtracking';
         $this->tab = 'analytics_stats';
         $this->tabName = 'Tracking';
-        $this->version = '1.2.0';
+        $this->version = '1.2.1';
         $this->author = 'Dominique';
         $this->need_instance = 0;
         $this->bootstrap = true;
